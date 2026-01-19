@@ -78,7 +78,9 @@ flutter run
 
  - permission_handler – Request location and background permissions
 
- ### Folder Structure
+### Folder Structure
+
+```bash
     lib/
 ├── core/
 │   ├── services/          # Notification & location services
@@ -90,6 +92,7 @@ flutter run
 ├── locations/
 │   └── target_locations.dart # Predefined locations
 └── main.dart              # App entry point
+```
 
 ### Notes
  - The app does not include a map UI.
