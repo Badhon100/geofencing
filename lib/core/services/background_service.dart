@@ -1,21 +1,32 @@
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:geofencing/core/services/notifiations_service.dart';
+import 'package:geolocator/geolocator.dart';
+
 import '../locations/target_locations.dart';
-import 'location_service.dart';
 import '../utils/distance_util.dart';
+import 'location_service.dart';
+import 'package:geofencing/core/services/notifiations_service.dart';
 
 Future<void> initializeBackgroundService() async {
   final service = FlutterBackgroundService();
 
+  // 🔹 MUST be done in UI isolate
   await NotificationService.init();
+
+  // 🔹 Permissions + GPS check BEFORE starting service
   await LocationService.requestPermission();
+
+  final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    await Geolocator.openLocationSettings();
+    return;
+  }
 
   await service.configure(
     androidConfiguration: AndroidConfiguration(
       onStart: onServiceStart,
       isForegroundMode: true,
       autoStart: true,
-      foregroundServiceTypes:  [AndroidForegroundType.location],
+      foregroundServiceTypes: const [AndroidForegroundType.location],
     ),
     iosConfiguration: IosConfiguration(
       onForeground: onServiceStart,
@@ -30,55 +41,52 @@ Future<void> initializeBackgroundService() async {
 void onServiceStart(ServiceInstance service) async {
   if (service is AndroidServiceInstance) {
     service.setAsForegroundService();
-
     service.setForegroundNotificationInfo(
       title: 'Geofencing Service',
       content: 'Location monitoring is active',
     );
   }
 
-  // Keep track of which locations already triggered
   final triggeredLocations = <String>{};
 
-  // 🔹 Immediately check current location when service starts
+  // 🔹 Initial location (SAFE)
   final currentPosition = await LocationService.getCurrentPosition();
+  if (currentPosition != null) {
+    _processLocation(currentPosition, triggeredLocations);
+  }
+
+  // 🔹 Continuous updates
+  LocationService.positionStream().listen(
+    (position) {
+      _processLocation(position, triggeredLocations);
+    },
+    onError: (_) {
+      // GPS turned off while running — ignore, service keeps alive
+    },
+  );
+
+  service.on('stopService').listen((_) {
+    service.stopSelf();
+  });
+}
+
+void _processLocation(Position position, Set<String> triggeredLocations) {
   for (final target in targetLocations) {
     final isInside = DistanceUtils.isInsideRadius(
-      userLat: currentPosition.latitude,
-      userLng: currentPosition.longitude,
+      userLat: position.latitude,
+      userLng: position.longitude,
       target: target,
     );
-    if (isInside) {
+
+    if (isInside && !triggeredLocations.contains(target.id)) {
       NotificationService.show('Hello, welcome to ${target.name}');
       triggeredLocations.add(target.id);
     }
-  }
 
-  // 🔄 Listen to location updates for entering/exiting other locations
-  LocationService.positionStream().listen((position) {
-    for (final target in targetLocations) {
-      final isInside = DistanceUtils.isInsideRadius(
-        userLat: position.latitude,
-        userLng: position.longitude,
-        target: target,
-      );
-
-      if (isInside && !triggeredLocations.contains(target.id)) {
-        NotificationService.show('Hello, welcome to ${target.name}');
-        triggeredLocations.add(target.id);
-      }
-
-      // Remove from triggered set if user leaves radius
-      if (!isInside && triggeredLocations.contains(target.id)) {
-        triggeredLocations.remove(target.id);
-      }
+    if (!isInside && triggeredLocations.contains(target.id)) {
+      triggeredLocations.remove(target.id);
     }
-  });
-
-  // ❌ Stop service manually
-  service.on('stopService').listen((event) {
-    service.stopSelf();
-  });
+  }
 }
 
 @pragma('vm:entry-point')
