@@ -48,6 +48,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   get_it: ^9.2.0
   cached_network_image: ^3.4.1
+  google_fonts: ^8.0.0
 
 dev_dependencies:
   flutter_test:
