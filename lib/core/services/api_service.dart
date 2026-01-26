@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class ApiService {
@@ -13,11 +14,11 @@ class ApiService {
       BaseOptions(
         baseUrl: "https://api.openai.com/v1/",
         headers: {
-          "Authorization": "Bearer REMOVEDenHUSrhAEbDmetX7xZo5QfU0K1Fm2A8qPTolUKSgsVbzjBKHKkxi2KxZijvW9pIQIyXWuLj13OT3BlbkFJ-q0DYXeECHSy8QE9ed1hqIkta40oNk6yjs9HHtRtfIEaS5KKBnOYJfXAtQ7ahbOCnvcngXy1IA",
+          "Authorization":
+              "Bearer ${dotenv.env['OPENAI_API_KEY']}",
           "Content-Type": "application/json",
         },
       ),
-
     );
 
     _initializeInterceptors();

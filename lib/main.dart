@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geofencing/core/di/injection_container.dart';
 import 'package:geofencing/core/providers.dart/bloc_providers.dart';
 import 'package:geofencing/core/services/connectivity_service.dart';
@@ -16,7 +17,7 @@ void main() async {
   await initializeBackgroundService();
   await NotificationService.init();
   InternetMonitor().start();
-  
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 
