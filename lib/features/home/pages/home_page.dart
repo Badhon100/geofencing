@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geofencing/features/historical_places/presentation/pages/historical_places_list_page.dart';
 import 'package:geofencing/features/home/cubit/home_cubit.dart';
 
 class HomePage extends StatelessWidget {
@@ -49,6 +50,20 @@ class HomePage extends StatelessWidget {
                       },
                       child: const Text('Start Monitoring'),
                     ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const HistoricalPlacesListPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('Historical Places'),
+                  ),
                 ],
               ),
             );

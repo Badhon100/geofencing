@@ -44,6 +44,10 @@ dependencies:
   internet_connection_checker_plus: ^2.9.1+2
   connectivity_plus: ^7.0.0
   fluttertoast: ^9.0.0
+  dio: ^5.9.0
+  pretty_dio_logger: ^1.4.0
+  get_it: ^9.2.0
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:
