@@ -13,6 +13,7 @@ class HistoricalPlacesListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final allowCache = context.read<SettingsCubit>().state;
+
     return BlocProvider(
       create: (_) =>
           Dependency.sl<HistoricalPlacesBloc>()
@@ -22,46 +23,81 @@ class HistoricalPlacesListPage extends StatelessWidget {
           builder: (context, state) {
             if (state is HistoricalPlacesLoading) {
               return const Center(child: CircularProgressIndicator());
-            } else if (state is HistoricalPlacesLoaded) {
-              return ListView.builder(
-                itemCount: state.historicalPlaces.length,
-                itemBuilder: (context, index) {
-                  final historicalPlaces = state.historicalPlaces[index];
-                  return ListTile(
-                    leading: CachedNetworkImage(
-                      imageUrl: historicalPlaces.imageUrl,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(
-                      historicalPlaces.title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    subtitle: Text(
-                      historicalPlaces.body,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => HistoricalPlacesDetailPage(
-                            historicalPlaces: historicalPlaces,
-                          ),
-                        ),
-                      );
-                    },
+            }
+
+            if (state is HistoricalPlacesLoaded) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<HistoricalPlacesBloc>().add(
+                    FetchHistoricalPlacesEvent(allowCache),
                   );
                 },
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: state.historicalPlaces.length,
+                  itemBuilder: (context, index) {
+                    final historicalPlaces = state.historicalPlaces[index];
+
+                    return ListTile(
+                      leading: CachedNetworkImage(
+                        imageUrl: historicalPlaces.imageUrl,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        placeholder: (c, _) => const SizedBox(
+                          width: 100,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                        errorWidget: (c, _, __) =>
+                            const Icon(Icons.broken_image),
+                      ),
+                      title: Text(
+                        historicalPlaces.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      subtitle: Text(
+                        historicalPlaces.body,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => HistoricalPlacesDetailPage(
+                              historicalPlaces: historicalPlaces,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               );
-            } else if (state is HistoricalPlacesError) {
-              return Center(child: Text(state.message));
             }
+
+            if (state is HistoricalPlacesError) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  context.read<HistoricalPlacesBloc>().add(
+                    FetchHistoricalPlacesEvent(allowCache),
+                  );
+                },
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      child: Center(child: Text(state.message)),
+                    ),
+                  ],
+                ),
+              );
+            }
+
             return const SizedBox();
           },
         ),

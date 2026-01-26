@@ -71,6 +71,8 @@ class SettingsPage extends StatelessWidget {
                               "Data will be saved on this device for offline access.",
                           confirmText: "Confirm",
                           cancelText: "Cancel",
+                          confirmationButtonColor: Colors.green,
+                          isDestructive: true,
                         );
 
                         if (confirm == true) {
