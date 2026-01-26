@@ -1,16 +1,36 @@
-// features/HistoricalPlaces/data/repository/HistoricalPlaces_repository_impl.dart
-
-import 'package:geofencing/features/historical_places/data/datasources/historical_places_datasource.dart';
-import 'package:geofencing/features/historical_places/domain/entities/historical_places_entity.dart';
-import 'package:geofencing/features/historical_places/domain/repositories/historical_places_repository.dart';
+import '../../domain/entities/historical_places_entity.dart';
+import '../../domain/repositories/historical_places_repository.dart';
+import '../datasources/historical_place_local_datasource.dart';
+import '../datasources/historical_places_datasource.dart';
 
 class HistoricalPlacesRepositoryImpl implements HistoricalPlacesRepository {
-  final HistoricalPlacesRemoteDataSource remoteDataSource;
+  final HistoricalPlacesRemoteDataSource remote;
+  final HistoricalPlacesLocalDatasource local;
 
-  HistoricalPlacesRepositoryImpl(this.remoteDataSource);
+  HistoricalPlacesRepositoryImpl(this.remote, this.local);
 
   @override
-  Future<List<HistoricalPlacesEntity>> getHistoricalPlaces() async {
-    return await remoteDataSource.getHistoricalPlaces();
+  Future<List<HistoricalPlacesEntity>> getHistoricalPlaces({
+    required bool allowCache,
+  }) async {
+    try {
+      final remoteModels = await remote.getHistoricalPlaces();
+
+      if (allowCache) {
+        await local.cacheHistoricalPlaces(remoteModels);
+      }
+
+      return remoteModels;
+    } catch (e) {
+      if (allowCache) {
+        final cachedModels = await local.getCachedHistoricalPlaces();
+
+        if (cachedModels.isNotEmpty) {
+          return cachedModels;
+        }
+      }
+
+      throw Exception("No internet and no cached data available");
+    }
   }
 }

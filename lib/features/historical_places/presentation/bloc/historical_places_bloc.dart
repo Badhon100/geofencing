@@ -6,15 +6,17 @@ import 'package:geofencing/features/historical_places/domain/usecases/historical
 part 'historical_places_event.dart';
 part 'historical_places_state.dart';
 
-class HistoricalPlacesBloc extends Bloc<HistoricalPlacesEvent, HistoricalPlacesState> {
+class HistoricalPlacesBloc
+    extends Bloc<HistoricalPlacesEvent, HistoricalPlacesState> {
   final GetHistoricalPlaces getHistoricalPlaces;
 
-  HistoricalPlacesBloc(this.getHistoricalPlaces) : super(HistoricalPlacesInitial()) {
+  HistoricalPlacesBloc(this.getHistoricalPlaces)
+    : super(HistoricalPlacesInitial()) {
     on<FetchHistoricalPlacesEvent>((event, emit) async {
       emit(HistoricalPlacesLoading());
       try {
-        final HistoricalPlaces = await getHistoricalPlaces();
-        emit(HistoricalPlacesLoaded(HistoricalPlaces));
+        final places = await getHistoricalPlaces();
+        emit(HistoricalPlacesLoaded(places));
       } catch (e) {
         emit(HistoricalPlacesError(e.toString()));
       }

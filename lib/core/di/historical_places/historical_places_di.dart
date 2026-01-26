@@ -1,3 +1,4 @@
+import 'package:geofencing/features/historical_places/data/datasources/historical_place_local_datasource.dart';
 import 'package:geofencing/features/historical_places/data/datasources/historical_places_datasource.dart';
 import 'package:geofencing/features/historical_places/data/repositories/historical_places_repository_impl.dart';
 import 'package:geofencing/features/historical_places/domain/repositories/historical_places_repository.dart';
@@ -12,8 +13,12 @@ class HistoricalPlacesDi {
       () => HistoricalPlacesRemoteDataSourceImpl(sl()),
     );
 
+    sl.registerLazySingleton<HistoricalPlacesLocalDatasource>(
+      () => HistoricalPlacesLocalDatasourceImpl(), // Hive cache
+    );
+
     // Repository
-    sl.registerLazySingleton<HistoricalPlacesRepository>(() => HistoricalPlacesRepositoryImpl(sl()));
+    sl.registerLazySingleton<HistoricalPlacesRepository>(() => HistoricalPlacesRepositoryImpl(sl(), sl()));
 
     // Use Cases
     sl.registerLazySingleton(() => GetHistoricalPlaces(sl()));

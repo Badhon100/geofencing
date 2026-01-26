@@ -3,5 +3,5 @@
 import 'package:geofencing/features/historical_places/domain/entities/historical_places_entity.dart';
 
 abstract class HistoricalPlacesRepository {
-  Future<List<HistoricalPlacesEntity>> getHistoricalPlaces();
+  Future<List<HistoricalPlacesEntity>> getHistoricalPlaces({required bool allowCache});
 }

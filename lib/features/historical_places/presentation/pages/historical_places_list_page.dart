@@ -5,24 +5,19 @@ import 'package:geofencing/core/di/injection_container.dart';
 import 'package:geofencing/features/historical_places/presentation/bloc/historical_places_bloc.dart';
 import 'package:geofencing/features/historical_places/presentation/pages/historical_places_details_page.dart'
     show HistoricalPlacesDetailPage;
+import 'package:geofencing/features/settings/cubit/settings_cubit.dart';
 
 class HistoricalPlacesListPage extends StatelessWidget {
   const HistoricalPlacesListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final allowCache = context.read<SettingsCubit>().state;
     return BlocProvider(
       create: (_) =>
           Dependency.sl<HistoricalPlacesBloc>()
-            ..add(FetchHistoricalPlacesEvent()),
+            ..add(FetchHistoricalPlacesEvent(allowCache)),
       child: Scaffold(
-        // appBar: AppBar(
-        //   title: const Text(
-        //     "Historical Places",
-        //     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-        //   ),
-        //   backgroundColor: Colors.white,
-        // ),
         body: BlocBuilder<HistoricalPlacesBloc, HistoricalPlacesState>(
           builder: (context, state) {
             if (state is HistoricalPlacesLoading) {
