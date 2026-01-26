@@ -8,14 +8,27 @@ class NotificationService {
     const androidSettings = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-    const settings = InitializationSettings(android: androidSettings);
+
+    const darwinSettings = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
+    const settings = InitializationSettings(
+      android: androidSettings,
+      iOS: darwinSettings, // for older versions (still accepted)
+      macOS: darwinSettings, // optional but safe
+    );
 
     await _plugin.initialize(settings);
 
+    // Request permission AFTER initialization
     if (await Permission.notification.isDenied) {
       await Permission.notification.request();
     }
   }
+
 
   static Future<void> show(String message) async {
     const androidDetails = AndroidNotificationDetails(
