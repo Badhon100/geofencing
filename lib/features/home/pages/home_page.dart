@@ -11,62 +11,70 @@ class HomePage extends StatelessWidget {
     return BlocProvider(
       create: (_) => HomeCubit(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Geofencing')),
+        appBar: AppBar(
+          title: const Text(
+            "Historical Places",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: Colors.white,
+          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.settings))],
+        ),
         body: BlocBuilder<HomeCubit, bool>(
           builder: (context, isActive) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    isActive ? Icons.location_on : Icons.location_off,
-                    size: 60,
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    isActive
-                        ? 'Monitoring is active in background'
-                        : 'Monitoring stopped',
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 30),
-                  if (isActive)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                      onPressed: () {
-                        context.read<HomeCubit>().stopMonitoring();
-                      },
-                      child: const Text('Close Monitoring'),
-                    ),
-                  if (!isActive)
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                      ),
-                      onPressed: () {
-                        context.read<HomeCubit>().startMonitoring();
-                      },
-                      child: const Text('Start Monitoring'),
-                    ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const HistoricalPlacesListPage(),
-                        ),
-                      );
-                    },
-                    child: const Text('Historical Places'),
-                  ),
-                ],
-              ),
-            );
+            // return Center(
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     children: [
+            //       Icon(
+            //         isActive ? Icons.location_on : Icons.location_off,
+            //         size: 60,
+            //       ),
+            //       const SizedBox(height: 20),
+            //       Text(
+            //         isActive
+            //             ? 'Monitoring is active in background'
+            //             : 'Monitoring stopped',
+            //         textAlign: TextAlign.center,
+            //       ),
+            //       const SizedBox(height: 30),
+            //       if (isActive)
+            //         ElevatedButton(
+            //           style: ElevatedButton.styleFrom(
+            //             backgroundColor: Colors.red,
+            //           ),
+            //           onPressed: () {
+            //             context.read<HomeCubit>().stopMonitoring();
+            //           },
+            //           child: const Text('Close Monitoring'),
+            //         ),
+            //       if (!isActive)
+            //         ElevatedButton(
+            //           style: ElevatedButton.styleFrom(
+            //             backgroundColor: Colors.green,
+            //           ),
+            //           onPressed: () {
+            //             context.read<HomeCubit>().startMonitoring();
+            //           },
+            //           child: const Text('Start Monitoring'),
+            //         ),
+            //       ElevatedButton(
+            //         style: ElevatedButton.styleFrom(
+            //           backgroundColor: Colors.green,
+            //         ),
+            //         onPressed: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (_) => const HistoricalPlacesListPage(),
+            //             ),
+            //           );
+            //         },
+            //         child: const Text('Historical Places'),
+            //       ),
+            //     ],
+            //   ),
+            // );
+            return HistoricalPlacesListPage();
           },
         ),
       ),
