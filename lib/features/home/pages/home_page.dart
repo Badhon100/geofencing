@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geofencing/features/chat/presentation/pages/chat_page.dart';
 import 'package:geofencing/features/historical_places/presentation/pages/historical_places_list_page.dart';
 import 'package:geofencing/features/home/cubit/home_cubit.dart';
 import 'package:geofencing/features/settings/pages/settings_page.dart';
@@ -18,14 +19,26 @@ class HomePage extends StatelessWidget {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.white,
-          actions: [IconButton(onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const SettingsPage(),
-              ),
-            );
-          }, icon: Icon(Icons.settings))],
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const SettingsPage()),
+                );
+              },
+              icon: Icon(Icons.settings),
+            ),
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ChatPage()),
+                );
+              },
+              icon: Icon(Icons.chat_bubble_outline),
+            ),
+          ],
         ),
         body: BlocBuilder<HomeCubit, bool>(
           builder: (context, isActive) {

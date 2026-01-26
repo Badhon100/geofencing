@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geofencing/features/chat/presentation/bloc/chat_bloc.dart';
 import 'package:geofencing/features/historical_places/presentation/bloc/historical_places_bloc.dart';
 import 'package:geofencing/features/home/cubit/home_cubit.dart';
 import 'package:geofencing/features/settings/cubit/settings_cubit.dart';
@@ -11,5 +12,6 @@ class BlocProviders {
     BlocProvider<HomeCubit>(create: (context) => sl<HomeCubit>()),
     BlocProvider<SettingsCubit>(create: (context) => sl<SettingsCubit>()),
     BlocProvider<HistoricalPlacesBloc>(create: (context) => sl<HistoricalPlacesBloc>()),
+    BlocProvider<ChatBloc>(create:  (context) => sl<ChatBloc>()),
   ];
 }

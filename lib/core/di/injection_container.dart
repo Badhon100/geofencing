@@ -1,3 +1,4 @@
+import 'package:geofencing/core/di/historical_places/chat_di.dart';
 import 'package:geofencing/core/di/historical_places/historical_places_di.dart';
 import 'package:geofencing/core/services/api_service.dart';
 import 'package:geofencing/features/home/cubit/home_cubit.dart';
@@ -14,7 +15,9 @@ class Dependency {
     sl.registerLazySingleton<ApiService>(() => ApiService());
     sl.registerFactory(() => SettingsCubit());
     sl.registerFactory(() => HomeCubit());
+
     
     HistoricalPlacesDi.init(sl);
+    ChatDi.init(sl);
   }
 }

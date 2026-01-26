@@ -11,11 +11,13 @@ class ApiService {
   ApiService._internal() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: "https://api.yourserver.com/",
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15),
-        headers: {"Accept": "application/json"},
+        baseUrl: "https://api.openai.com/v1/",
+        headers: {
+          "Authorization": "Bearer REMOVEDenHUSrhAEbDmetX7xZo5QfU0K1Fm2A8qPTolUKSgsVbzjBKHKkxi2KxZijvW9pIQIyXWuLj13OT3BlbkFJ-q0DYXeECHSy8QE9ed1hqIkta40oNk6yjs9HHtRtfIEaS5KKBnOYJfXAtQ7ahbOCnvcngXy1IA",
+          "Content-Type": "application/json",
+        },
       ),
+
     );
 
     _initializeInterceptors();
