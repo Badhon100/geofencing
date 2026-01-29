@@ -38,8 +38,10 @@ class NotificationService {
       priority: Priority.high,
     );
 
+    final id = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
     await _plugin.show(
-      0,
+      id,
       'Geofencing Alert',
       message,
       const NotificationDetails(android: androidDetails),

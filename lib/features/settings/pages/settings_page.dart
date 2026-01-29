@@ -40,11 +40,34 @@ class SettingsPage extends StatelessWidget {
                           isDestructive: true,
                         );
 
-                        if (confirm == true) {
+                        if (confirm == true && context.mounted) {
                           context.read<HomeCubit>().stopMonitoring();
                         }
                       } else {
-                        context.read<HomeCubit>().startMonitoring();
+                        // Try to start monitoring - will fail if GPS is disabled
+                        final success = await context.read<HomeCubit>().startMonitoring();
+                        
+                        if (!success) {
+                          // GPS is disabled, show dialog
+                          if (context.mounted) {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text("GPS Required"),
+                                content: const Text(
+                                  "Location monitoring requires GPS to be enabled. "
+                                  "Please turn on GPS in your device settings.",
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(context).pop(),
+                                    child: const Text("OK"),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                        }
                       }
                     },
                   ),

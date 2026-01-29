@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geofencing/core/di/injection_container.dart';
 import 'package:geofencing/core/providers.dart/bloc_providers.dart';
 import 'package:geofencing/core/services/connectivity_service.dart';
-import 'package:geofencing/core/services/notifiations_service.dart';
+import 'package:geofencing/core/services/notifications_service.dart';
 import 'package:geofencing/features/home/pages/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -33,7 +33,9 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           textTheme: TextTheme(
-            headlineLarge: GoogleFonts.merriweather(fontWeight: FontWeight.bold),
+            headlineLarge: GoogleFonts.merriweather(
+              fontWeight: FontWeight.bold,
+            ),
             bodyMedium: GoogleFonts.inter(),
           ),
         ),

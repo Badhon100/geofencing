@@ -12,10 +12,10 @@ class ApiService {
   ApiService._internal() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: "https://api.openai.com/v1/",
+        baseUrl: "https://generativelanguage.googleapis.com",
         headers: {
-          "Authorization":
-              "Bearer ${dotenv.env['OPENAI_API_KEY']}",
+          // "Authorization":
+          //     "Bearer ${dotenv.env['OPENAI_API_KEY']}",
           "Content-Type": "application/json",
         },
       ),

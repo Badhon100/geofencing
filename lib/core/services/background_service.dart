@@ -1,10 +1,11 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../locations/target_locations.dart';
 import '../utils/distance_util.dart';
 import 'location_service.dart';
-import 'package:geofencing/core/services/notifiations_service.dart';
+import 'package:geofencing/core/services/notifications_service.dart';
 
 Future<void> initializeBackgroundService() async {
   final service = FlutterBackgroundService();
@@ -39,6 +40,9 @@ Future<void> initializeBackgroundService() async {
 
 @pragma('vm:entry-point')
 void onServiceStart(ServiceInstance service) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService.init();
+
   if (service is AndroidServiceInstance) {
     service.setAsForegroundService();
     service.setForegroundNotificationInfo(
@@ -67,6 +71,14 @@ void onServiceStart(ServiceInstance service) async {
 
   service.on('stopService').listen((_) {
     service.stopSelf();
+  });
+
+  service.on('resetState').listen((_) async {
+    triggeredLocations.clear();
+    final currentPosition = await LocationService.getCurrentPosition();
+    if (currentPosition != null) {
+      _processLocation(currentPosition, triggeredLocations);
+    }
   });
 }
 
